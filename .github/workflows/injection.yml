@@ -11,6 +11,13 @@ jobs:
     if: github.actor == github.repository_owner
     runs-on: ubuntu-26.04
     steps:
-      - name: Echo the title
+      - name: Demonstrate harmless title injection
+        if: github.event.pull_request.title == 'x"; echo "INJECTION_CONFIRMED"; echo "'
         run: |
           echo "Title: ${{ github.event.pull_request.title }}"
+
+      - name: Echo the title safely
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          printf 'Title: %s\n' "$PR_TITLE"
