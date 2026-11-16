@@ -7,14 +7,14 @@ permissions:
   contents: read
 
 jobs:
-  steps-container:
+  step-container:
     runs-on: ubuntu-latest
     steps:
-      - name: On the container
+      - name: On the runner
         run: cat /etc/os-release
 
       - name: In an Alpine container
-        uses: docker://alpine:latest
+        uses: docker://alpine:3.22
         with:
           entrypoint: /bin/sh
           args: -c "cat /etc/os-release"
@@ -23,23 +23,40 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: node:22-bookworm-slim
+      env:
+        MY_SETTING: from-the-container-block
     services:
       redis:
-        image: redis:latest
-        options: --health-cmd "redis-cli ping" --health-interval 10s --health-retries 5
+        image: redis:7
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 5
     steps:
-      - name: Check Node and OS
+      - name: Check Node, OS, and container environment
         run: |
-         node -e "const s=require('net').connect(6379,'redis',()=>{s.write('PING\r\n')});s.on('data',d=>{console.log(d.toString());s.end()});"
+          node --version
+          cat /etc/os-release
+          echo "MY_SETTING=$MY_SETTING"
+
+      - name: Reach the Redis service by name
+        run: |
+          node -e "const s=require('net').connect(6379,'redis',()=>{s.write('PING\r\n')});s.on('data',d=>{console.log(d.toString());s.end()});"
 
   missing-tools:
     runs-on: ubuntu-latest
     container: alpine:3.22
     steps:
-      - uses: actions/checkout@v7
+      - name: Install tools required by checkout and the shell
+        run: apk add --no-cache bash git jq curl
+
+      - uses: actions/checkout@v7.0.1
         with:
           persist-credentials: false
 
       - name: Needs git and bash
         shell: bash
-        run: git log -1
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git log -1
