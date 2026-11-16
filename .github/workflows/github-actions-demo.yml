@@ -16,6 +16,11 @@ on:
         type: environment
         required: true
 
+permissions:
+  contents: read
+
+  cache-mode: none
+
 jobs: 
   build:
     runs-on: ubuntu-latest
