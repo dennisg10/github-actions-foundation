@@ -72,4 +72,5 @@ For this workshop you need the following:
 
 ## Cheat Sheet
 Find common terminology for reference [here](./CheatSheet.md)
+extra tekst om zo mijn trigger te testen
 
