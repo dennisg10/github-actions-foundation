@@ -39,8 +39,8 @@ jobs:
         run: ls -R
 
   Test:
-    runs-on: ubuntu-26.04
-    needs: build
+    runs-on: ubuntu-latest
+    needs: [Build]
     if: github.event_name == 'workflow_dispatch'
     environment: Test
 
@@ -49,8 +49,8 @@ jobs:
         run: echo "Testing..."
 
   Load-Test:
-    runs-on: ubuntu-26.04
-    needs: build
+    runs-on: ubuntu-latest
+    needs: [Build]
     if: github.event_name == 'workflow_dispatch'
     environment: Load-Test
 
@@ -61,7 +61,7 @@ jobs:
           sleep 15
 
   Production:
-    runs-on: ubuntu-26.04
+    runs-on: ubuntu-latest
     needs: [Test, Load-Test]
     if: github.event_name == 'workflow_dispatch' && inputs.environment == 'Production'
     environment:
