@@ -19,7 +19,7 @@ on:
 permissions:
   contents: read
 
-  cache-mode: none
+cache-mode: none
 
 jobs: 
   build:
