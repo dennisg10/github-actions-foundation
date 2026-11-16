@@ -1,0 +1,21 @@
+name: Containers Workflow
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  steps-container:
+    runs-on: ubuntu-latest
+    steps:
+      - name: On the container
+        run: cat /etc/os-release
+
+      - name: In an Alpine container
+        uses: docker://alpine:latest
+        with:
+          entrypoint: /bin/sh
+          args: -c "cat /etc/os-release"
+
